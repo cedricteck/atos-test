@@ -54,6 +54,24 @@ public class TransactionService {
 				.map(this::map).collect(Collectors.toList()));
 	}
 
+	public void removeTransaction(String accountId, String transactionId){
+
+		if(!accountService.isAccountExist(accountId)){
+			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
+					"Account doesn't exist");
+		}
+		if(!isTransactionExist(transactionId)){
+			throw new ServiceException(ErrorCode.NOT_FOUND_TRANSACTION,
+					"Transaction doesn't exist");
+		}
+		if(!transactionBelongToAccount(accountId, transactionId)){
+			throw new ServiceException(ErrorCode.FORBIDDEN_TRANSACTION,
+					"Transaction doesn't belong to account");
+		}
+
+		transactionRepository.deleteTransaction(transactionId);
+
+	}
 	/**
 	 * Map {@link Transaction} to {@link TransactionResponse}
 	 * 
@@ -66,6 +84,25 @@ public class TransactionService {
 		result.setId(transaction.getId());
 		result.setNumber(transaction.getNumber());
 		return result;
+	}
+
+	/**
+	 * Check if a transaction exist
+	 * @param transactionId
+	 * @return
+	 */
+	public boolean isTransactionExist(String transactionId){
+		return transactionRepository.exist(transactionId);
+	}
+
+	/**
+	 * Check if a transaction belong to an account
+	 * @param accountId
+	 * @param transactionId
+	 * @return
+	 */
+	public boolean transactionBelongToAccount(String accountId, String transactionId){
+		return transactionRepository.transactionBelongToAccount(accountId, transactionId);
 	}
 
 }
