@@ -67,4 +67,14 @@ public class TransactionControllerImpl implements TransactionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.addTransaction(accountId,addUpdateTransaction));
 
 	}
+
+    @Override
+    public ResponseEntity<TransactionResponse> updateTransaction(
+            @PathVariable("accountId") String accountId,
+            @PathVariable("transactionId") String transactionId,
+            @Validated @RequestBody AddUpdateTransaction addUpdateTransaction){
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(transactionService.updateTransaction(accountId,transactionId, addUpdateTransaction));
+
+    }
 }

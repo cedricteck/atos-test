@@ -1,5 +1,6 @@
 package com.worldline.fpl.recruitment.dao;
 
+import com.worldline.fpl.recruitment.json.AddUpdateTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -56,10 +57,16 @@ public interface TransactionRepository {
 	boolean transactionBelongToAccount(String accountId, String transactionId);
 
 	/**
-	 * Ajoute une transaction a un account
-	 * @param accountId
+	 * Add a transaction to an account
 	 * @param transaction
 	 * @return
 	 */
-	Transaction add(String accountId, Transaction transaction);
+	Transaction add(Transaction transaction);
+
+	/**
+	 * Update a transaction
+	 * @param transaction
+	 * @return
+	 */
+	Transaction update(Transaction transaction);
 }

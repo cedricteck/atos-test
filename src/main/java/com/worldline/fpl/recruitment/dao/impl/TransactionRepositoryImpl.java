@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.worldline.fpl.recruitment.entity.Account;
+import com.worldline.fpl.recruitment.json.AddUpdateTransaction;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -91,12 +92,18 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 	}
 
 	@Override
-	public Transaction add(String accountId, Transaction transaction){
-			transaction.setAccountId(accountId);
+	public Transaction add(Transaction transaction){
 			transaction.setId(ID.toString());
 			ID++;
 			transactions.add(transaction);
 			return transaction;
+	}
+
+	@Override
+	public Transaction update(Transaction transaction){
+		transactions.removeIf(t->t.getId().equals(transaction.getId()));
+		transactions.add(transaction);
+		return transaction;
 	}
 
 }

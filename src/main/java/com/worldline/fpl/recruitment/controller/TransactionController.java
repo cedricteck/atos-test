@@ -45,4 +45,10 @@ public interface TransactionController {
 	ResponseEntity<TransactionResponse> addTransaction(
 			@PathVariable("accountId") String accountId,
 			@RequestBody AddUpdateTransaction addUpdateTransaction);
+
+	@RequestMapping(value="/{transactionId}", method = RequestMethod.PUT)
+	ResponseEntity<TransactionResponse> updateTransaction(
+			@PathVariable("accountId") String accountId,
+			@PathVariable("transactionId") String transactionId,
+			@RequestBody AddUpdateTransaction addUpdateTransaction);
 }
