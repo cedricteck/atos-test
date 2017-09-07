@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.worldline.fpl.recruitment.entity.Account;
+import com.worldline.fpl.recruitment.json.AddUpdateTransaction;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,6 +27,7 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 		InitializingBean {
 
 	private List<Transaction> transactions;
+	private static Integer ID = 1;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -33,7 +36,8 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 			Transaction transaction = new Transaction();
 			transaction.setAccountId("1");
 			transaction.setBalance(BigDecimal.valueOf(42.12));
-			transaction.setId("1");
+			transaction.setId(ID.toString());
+			ID++;
 			transaction.setNumber("12151885120");
 			transactions.add(transaction);
 		}
@@ -41,7 +45,8 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 			Transaction transaction = new Transaction();
 			transaction.setAccountId("1");
 			transaction.setBalance(BigDecimal.valueOf(456.00));
-			transaction.setId("2");
+			transaction.setId(ID.toString());
+			ID++;
 			transaction.setNumber("12151885121");
 			transactions.add(transaction);
 		}
@@ -49,7 +54,8 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 			Transaction transaction = new Transaction();
 			transaction.setAccountId("1");
 			transaction.setBalance(BigDecimal.valueOf(-12.12));
-			transaction.setId("3");
+			transaction.setId(ID.toString());
+			ID++;
 			transaction.setNumber("12151885122");
 			transactions.add(transaction);
 		}
@@ -84,4 +90,20 @@ public class TransactionRepositoryImpl implements TransactionRepository,
 	public boolean transactionBelongToAccount(String accountId, String transactionId){
 		return transactions.stream().filter(t->t.getAccountId().equals(accountId)).anyMatch(t->t.getId().equals(transactionId));
 	}
+
+	@Override
+	public Transaction add(Transaction transaction){
+			transaction.setId(ID.toString());
+			ID++;
+			transactions.add(transaction);
+			return transaction;
+	}
+
+	@Override
+	public Transaction update(Transaction transaction){
+		transactions.removeIf(t->t.getId().equals(transaction.getId()));
+		transactions.add(transaction);
+		return transaction;
+	}
+
 }
