@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class StartBoot {
 
 	public static void main(String[] args) {
-		log.info("Start application ...");
+		log.info("Start application ... ");
 		SpringApplication.run(StartBoot.class, args);
 	}
 
