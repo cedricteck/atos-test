@@ -2,6 +2,7 @@ package com.worldline.fpl.recruitment.service;
 
 import java.util.stream.Collectors;
 
+import com.worldline.fpl.recruitment.json.AddUpdateTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -72,6 +73,17 @@ public class TransactionService {
 		transactionRepository.deleteTransaction(transactionId);
 
 	}
+
+	public TransactionResponse addTransaction(String accountId, AddUpdateTransaction addUpdateTransaction){
+		if(!accountService.isAccountExist(accountId)){
+			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
+					"Account doesn't exist");
+		}
+		return map(transactionRepository.add(accountId, map(addUpdateTransaction)));
+	}
+
+
+
 	/**
 	 * Map {@link Transaction} to {@link TransactionResponse}
 	 * 
@@ -84,6 +96,15 @@ public class TransactionService {
 		result.setId(transaction.getId());
 		result.setNumber(transaction.getNumber());
 		return result;
+	}
+
+	private Transaction map (AddUpdateTransaction addUpdateTransaction){
+
+		Transaction transaction = new Transaction();
+		transaction.setNumber(addUpdateTransaction.getNumber());
+		transaction.setBalance(addUpdateTransaction.getBalance());
+
+		return transaction;
 	}
 
 	/**

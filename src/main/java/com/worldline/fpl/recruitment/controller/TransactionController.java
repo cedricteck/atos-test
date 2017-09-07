@@ -1,11 +1,13 @@
 package com.worldline.fpl.recruitment.controller;
 
+import com.worldline.fpl.recruitment.json.AddUpdateTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -38,4 +40,9 @@ public interface TransactionController {
 	ResponseEntity<Page> deleteTransaction(
 			@PathVariable("accountId") String accountId,
 			@PathVariable("transactionId") String transactionId);
+
+	@RequestMapping(value="", method = RequestMethod.POST)
+	ResponseEntity<TransactionResponse> addTransaction(
+			@PathVariable("accountId") String accountId,
+			@RequestBody AddUpdateTransaction addUpdateTransaction);
 }
