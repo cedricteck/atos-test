@@ -55,7 +55,16 @@ public class AccountService {
 	 * @return true if the account exists
 	 */
 	public boolean isAccountExist(String accountId) {
-		return accountRepository.exists(accountId);
+		return accountRepository.exists(Long.parseLong(accountId));
+	}
+
+	/**
+	 * Find a account based on the id
+	 * @param accountId
+	 * @return
+	 */
+	public Account findOne(String accountId){
+		return accountRepository.findOne(Long.parseLong(accountId));
 	}
 
 	/**
@@ -67,10 +76,18 @@ public class AccountService {
 	 */
 	public AccountDetailsResponse getAccountDetails(String accountId) {
 		log.debug("Find account {}", accountId);
-		Account account = accountRepository.findById(accountId).orElseThrow(
-				() -> new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
-						"Account doesn't exist"));
-		return mapToAccountDetailsResponse(account);
+
+		try{
+			Account account = accountRepository.findOne(Long.parseLong(accountId));
+			if(account == null){
+				throw  new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT, "Account doesn't exist");
+			}
+			return mapToAccountDetailsResponse(account);
+		}
+		catch (NumberFormatException e){
+			throw  new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT, "Account doesn't exist");
+		}
+
 	}
 
 	/**
@@ -83,7 +100,7 @@ public class AccountService {
 	private AccountResponse mapToAccountResponse(Account account) {
 		AccountResponse result = new AccountResponse();
 		result.setBalance(account.getBalance());
-		result.setId(account.getId());
+		result.setId(account.getId().toString());
 		result.setNumber(account.getNumber());
 		result.setType(account.getType());
 		return result;
@@ -101,7 +118,7 @@ public class AccountService {
 		result.setActive(account.isActive());
 		result.setCreationDate(account.getCreationDate());
 		result.setBalance(account.getBalance());
-		result.setId(account.getId());
+		result.setId(account.getId().toString());
 		result.setNumber(account.getNumber());
 		result.setType(account.getType());
 		return result;

@@ -2,6 +2,7 @@ package com.worldline.fpl.recruitment.service;
 
 import java.util.stream.Collectors;
 
+import com.worldline.fpl.recruitment.entity.Account;
 import com.worldline.fpl.recruitment.json.AddUpdateTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,7 +52,7 @@ public class TransactionService {
 					"Account doesn't exist");
 		}
 		return new PageImpl<TransactionResponse>(transactionRepository
-				.getTransactionsByAccount(accountId, p).getContent().stream()
+				.findByAccountId(Long.parseLong(accountId), p).getContent().stream()
 				.map(this::map).collect(Collectors.toList()));
 	}
 
@@ -70,7 +71,7 @@ public class TransactionService {
 					"Transaction doesn't belong to account");
 		}
 
-		transactionRepository.deleteTransaction(transactionId);
+		transactionRepository.delete(Long.parseLong(transactionId));
 
 	}
 
@@ -79,7 +80,7 @@ public class TransactionService {
 			throw new ServiceException(ErrorCode.NOT_FOUND_ACCOUNT,
 					"Account doesn't exist");
 		}
-		return map(transactionRepository.add(map(accountId, addUpdateTransaction)));
+		return map(transactionRepository.save(map(accountId, addUpdateTransaction)));
 	}
 
 
@@ -98,7 +99,7 @@ public class TransactionService {
 					"Transaction doesn't belong to account");
 		}
 
-		return map(transactionRepository.update(map(accountId, transactionId, addUpdateTransaction)));
+		return map(transactionRepository.save(map(accountId, transactionId, addUpdateTransaction)));
 
 	}
 
@@ -111,7 +112,7 @@ public class TransactionService {
 	private TransactionResponse map(Transaction transaction) {
 		TransactionResponse result = new TransactionResponse();
 		result.setBalance(transaction.getBalance());
-		result.setId(transaction.getId());
+		result.setId(transaction.getId().toString());
 		result.setNumber(transaction.getNumber());
 		return result;
 	}
@@ -119,7 +120,8 @@ public class TransactionService {
 	private Transaction map (String accountId, AddUpdateTransaction addUpdateTransaction){
 
 		Transaction transaction = new Transaction();
-		transaction.setAccountId(accountId);
+		Account account = accountService.findOne(accountId);
+		transaction.setAccount(account);
 		transaction.setNumber(addUpdateTransaction.getNumber());
 		transaction.setBalance(addUpdateTransaction.getBalance());
 
@@ -128,8 +130,9 @@ public class TransactionService {
 
 	private Transaction map(String accountId, String transactionId, AddUpdateTransaction addUpdateTransaction){
 		Transaction transaction = new Transaction();
-		transaction.setAccountId(accountId);
-		transaction.setId(transactionId);
+		Account account = accountService.findOne(accountId);
+		transaction.setAccount(account);
+		transaction.setId(Long.parseLong(transactionId));
 		transaction.setNumber(addUpdateTransaction.getNumber());
 		transaction.setBalance(addUpdateTransaction.getBalance());
 		return transaction;
@@ -140,7 +143,7 @@ public class TransactionService {
 	 * @return
 	 */
 	public boolean isTransactionExist(String transactionId){
-		return transactionRepository.exist(transactionId);
+		return transactionRepository.exists(Long.parseLong(transactionId));
 	}
 
 	/**
@@ -150,7 +153,13 @@ public class TransactionService {
 	 * @return
 	 */
 	public boolean transactionBelongToAccount(String accountId, String transactionId){
-		return transactionRepository.transactionBelongToAccount(accountId, transactionId);
+		Transaction  transaction = transactionRepository.findByIdAndAccountId(Long.parseLong(transactionId), Long.parseLong(accountId) );
+		if(transaction != null){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 }

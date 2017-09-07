@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.worldline.fpl.recruitment.entity.Transaction;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * Transaction repository
@@ -12,17 +13,10 @@ import com.worldline.fpl.recruitment.entity.Transaction;
  * @author A525125
  *
  */
-public interface TransactionRepository {
+public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
 
 
-	/**
-	 * Get transaction by Id
-	 *
-	 * @param id
-	 *            id of the transaction to get
-	 * @return the transaction corresponding to the given id or null
-	 */
-	Transaction findById(String id);
+
 
 	/**
 	 * Get transactions by account
@@ -33,40 +27,14 @@ public interface TransactionRepository {
 	 *            the pageable information
 	 * @return
 	 */
-	Page<Transaction> getTransactionsByAccount(String accountId, Pageable p);
+	Page<Transaction> findByAccountId(Long accountId, Pageable p);
 
 	/**
-	 * Delete a transaction
-	 * @param transactionId
-	 */
-	void deleteTransaction(String transactionId);
-
-	/**
-	 * Check if a transaction exist
-	 * @param transactionId
-	 * @return
-	 */
-	boolean exist(String transactionId);
-
-	/**
-	 * Check if a transaction belong to a specific account
+	 * Find a transaction with a specific account and transaction id
+	 * @param id
 	 * @param accountId
-	 * @param transactionId
 	 * @return
 	 */
-	boolean transactionBelongToAccount(String accountId, String transactionId);
+	Transaction findByIdAndAccountId(Long id, Long accountId);
 
-	/**
-	 * Add a transaction to an account
-	 * @param transaction
-	 * @return
-	 */
-	Transaction add(Transaction transaction);
-
-	/**
-	 * Update a transaction
-	 * @param transaction
-	 * @return
-	 */
-	Transaction update(Transaction transaction);
 }
