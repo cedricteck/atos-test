@@ -33,4 +33,25 @@ public interface TransactionRepository {
 	 * @return
 	 */
 	Page<Transaction> getTransactionsByAccount(String accountId, Pageable p);
+
+	/**
+	 * Delete a transaction
+	 * @param transactionId
+	 */
+	void deleteTransaction(String transactionId);
+
+	/**
+	 * Check if a transaction exist
+	 * @param transactionId
+	 * @return
+	 */
+	boolean exist(String transactionId);
+
+	/**
+	 * Check if a transaction belong to a specific account
+	 * @param accountId
+	 * @param transactionId
+	 * @return
+	 */
+	boolean transactionBelongToAccount(String accountId, String transactionId);
 }
