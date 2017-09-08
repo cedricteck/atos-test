@@ -98,8 +98,8 @@ public class TransactionService {
 			throw new ServiceException(ErrorCode.FORBIDDEN_TRANSACTION,
 					"Transaction doesn't belong to account");
 		}
-
-		return map(transactionRepository.save(map(accountId, transactionId, addUpdateTransaction)));
+		Transaction transaction = transactionRepository.findOne(Long.parseLong(transactionId));
+		return map(transactionRepository.save(merge(transaction, addUpdateTransaction)));
 
 	}
 
@@ -128,11 +128,7 @@ public class TransactionService {
 		return transaction;
 	}
 
-	private Transaction map(String accountId, String transactionId, AddUpdateTransaction addUpdateTransaction){
-		Transaction transaction = new Transaction();
-		Account account = accountService.findOne(accountId);
-		transaction.setAccount(account);
-		transaction.setId(Long.parseLong(transactionId));
+	private Transaction merge(Transaction transaction, AddUpdateTransaction addUpdateTransaction){
 		transaction.setNumber(addUpdateTransaction.getNumber());
 		transaction.setBalance(addUpdateTransaction.getBalance());
 		return transaction;
