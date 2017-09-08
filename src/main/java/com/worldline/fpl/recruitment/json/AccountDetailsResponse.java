@@ -24,7 +24,7 @@ public class AccountDetailsResponse extends AccountResponse implements
 	private static final long serialVersionUID = -6427772324577115079L;
 
 	@NotNull
-	private Date creationDate;
+	private String creationDate;
 
 	@NotNull
 	private boolean active;
